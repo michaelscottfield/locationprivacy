@@ -8,7 +8,7 @@ public class Location_dummy_set {
 	double time;
 	int id_location_real;
 	int index_location_real;
-	Vector<Location> location_dummy_set;
+	Vector<Location> location_dummy_set = new Vector<Location>();
 
 	boolean CreateLocationDummySet(int num_dummy, double time, Location location_real, int k, double s) {
 		this.num_dummy = num_dummy;
@@ -19,10 +19,17 @@ public class Location_dummy_set {
 
 	boolean CreateLocationDummy(Location location_real, int k, double s) {
 		int c = (int) Math.ceil(Math.sqrt(k));
+		//System.out.println(k + " " + c);
 		double g = Math.sqrt(s) / (c - 1) * 0.01 / 1000;
 		int idx = (int) (Math.random() * c);
 		int idy = (int) (Math.random() * c);
+		//System.out.println(idx + " " +idy);
+		while(idx*c + idy >= k) {
+			idx = (int) (Math.random() * c);
+			idy = (int) (Math.random() * c);
+		}
 		this.id_location_real = idx * c + idy;
+		
 		this.index_location_real = idx * c + idy;
 		for (int i = 0; i <= c - 1; i++) {
 			for (int j = 0; j <= c - 1; j++) {

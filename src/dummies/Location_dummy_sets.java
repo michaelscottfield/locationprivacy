@@ -6,8 +6,8 @@ import java.util.Set;
 import java.util.Vector;
 
 public class Location_dummy_sets {
-	Location_dummy_set first;
-	Location_dummy_set second;
+	Location_dummy_set first = new Location_dummy_set();
+	Location_dummy_set second = new Location_dummy_set();
 	Points_of_interest points_of_interest = new Points_of_interest();
 	Utils utils = new Utils();
 	boolean CreateLocationDummySets() throws IOException {
@@ -17,6 +17,8 @@ public class Location_dummy_sets {
 		location_real_first.longitude = -118.23556;
 		location_real_first.latitude = 34.10444;
 		first.CreateLocationDummySet(Stdafx.NUM_DUMMY, 0.0, location_real_first, Stdafx.NUM_DUMMY, 10000);
+		//System.out.println(first.id_location_real);
+		//System.out.println(first.location_dummy_set.size());
 		for(Iterator<Location> iter = this.points_of_interest.poi.iterator(); iter.hasNext();) {
 		//for (vector<Location>::iterator iter = this->points_of_interest.poi.begin(); iter != this->points_of_interest.poi.end(); iter++) {
 			Location loc;
@@ -60,10 +62,13 @@ public class Location_dummy_sets {
 	boolean DirectionFilter() {
 		Vector<Location> location_dummy_set_first = this.first.location_dummy_set;
 		Vector<Location> location_dummy_set_second = this.second.location_dummy_set;
+		//System.out.println(this.first.location_dummy_set.size());
 		Location location_real_first = this.first.location_dummy_set.get(this.first.index_location_real);
 		Location location_real_second = this.second.location_dummy_set.get(this.second.index_location_real);
 		int k = this.second.num_dummy;
-		Location loc_first, loc_second, loc;
+		Location loc_first = new Location();
+		Location loc_second = new Location();
+		Location loc = new Location();
 		for(Iterator<Location> iter_second = location_dummy_set_second.iterator(); iter_second.hasNext();) {
 		//for (vector<Location>::iterator iter_second = location_dummy_set_second->begin(); iter_second != location_dummy_set_second->end(); iter_second++) {
 			loc_second = iter_second.next();
@@ -72,6 +77,19 @@ public class Location_dummy_sets {
 				loc_first = iter_first.next();
 				double angle = this.AngleVectors(loc_first, loc_second, location_real_first, location_real_second);
 				if (angle < Stdafx.THETA_A) {
+					//System.out.println(loc_second.id);
+					//if(loc_first == null) {
+						//System.out.println("out of control");
+					//}
+					if(loc_first.edges_id == null) {
+						loc_first.edges_id = new Vector<Integer>();
+						//System.out.println("impossible");
+					}
+					if(loc_second.edges_id == null) {
+						loc_second.edges_id = new Vector<Integer>();
+						//System.out.println("impossible");
+					}
+					//System.out.println(loc_first.edges_id.get(0));
 					loc_first.edges_id.add(loc_second.id);
 					loc_second.edges_id.add(loc_first.id);
 				}
@@ -80,8 +98,12 @@ public class Location_dummy_sets {
 		for(Iterator<Location> iter = location_dummy_set_second.iterator(); iter.hasNext();) {
 		//for (vector<Location>::iterator iter = location_dummy_set_second->begin(); iter != location_dummy_set_second->end(); ) {
 			loc = iter.next();
-			if (loc.edges_id.size() == 0) {
-				location_dummy_set_second.remove(loc);
+			//if(loc.edges_id == null) {
+				//loc.edges_id = new Vector<Integer>();
+				//System.out.println("impossible");
+			//}
+			if (loc.edges_id == null || loc.edges_id.size() == 0) {
+				iter.remove();
 			}
 			/*else {
 				
@@ -118,20 +140,22 @@ public class Location_dummy_sets {
 		//Location *location_real_second = &(this->second.location_dummy_set[this->second.index_location_real]);
 		int k = this.second.num_dummy;
 		Location loc_first, loc_second;
-		for(Iterator<Location> iter_second = location_dummy_set_second.iterator(); iter_second.hasNext();) {
+		int edgeid;
+		for(Iterator<Location> iter_first = location_dummy_set_first.iterator(); iter_first.hasNext();) {
 		//for (vector<Location>::iterator iter_second = location_dummy_set_second->begin(); iter_second != location_dummy_set_second->end(); iter_second++) {
-			loc_second = iter_second.next();
-			for(Iterator<Location> iter_first = location_dummy_set_first.iterator(); iter_first.hasNext();) {
+			loc_first = iter_first.next();
+			for(Iterator<Integer> iter = loc_first.edges_id.iterator(); iter.hasNext();) {
 			//for (vector<Location>::iterator iter_first = location_dummy_set_first->begin(); iter_first != location_dummy_set_first->end(); iter_first++) {
-				loc_first = iter_first.next();
+				edgeid = iter.next();
 		//for (vector<Location>::iterator iter_first = location_dummy_set_first->begin(); iter_first != location_dummy_set_first->end(); iter_first++) {
 			//for (vector<int>::iterator iter = iter_first->edges_id.begin(); iter != iter_first->edges_id.end(); ) {
-				Location location_second = this.second.GetLocationById(loc_second.id);
+				Location location_second = this.second.GetLocationById(edgeid);
 				double time = this.GetTime(loc_first, location_second);
 				double time_difference = this.second.time - this.first.time;
 				if (Math.abs(time - time_difference) > Stdafx.THETA_T * time_difference) {
-					this.second.DeleteLocationById(loc_second.id, loc_first.id);
-					loc_second.edges_id.remove(loc_second.id);
+					this.second.DeleteLocationById(edgeid, loc_first.id);
+					//loc_first.edges_id.remove(edgeid);
+					iter.remove();
 					//iter = iter_first->edges_id.erase(iter);
 				}
 				else {
@@ -143,7 +167,8 @@ public class Location_dummy_sets {
 		//for (vector<Location>::iterator iter = location_dummy_set_second->begin(); iter != location_dummy_set_second->end(); ) {
 			loc_second = iter_second.next();
 			if (loc_second.edges_id.size() == 0) {
-				location_dummy_set_second.remove(loc_second);
+				//location_dummy_set_second.remove(loc_second);
+				iter_second.remove();
 			}
 			
 		}
@@ -199,33 +224,44 @@ public class Location_dummy_sets {
 			}
 		}
 
-		if (tag == 1) {
+		if (tag > 0) {
 			System.out.println("location_dummy_sets: degree reasonability filter failed, second real location degree is gratest");
 			//cout << "location_dummy_sets: degree reasonability filter failed, second real location degree is gratest" << endl;
 			return false;
 		}
-
+		//System.out.println("before while loop");
 		while (true) {
 			int dummy_k = k - 1;
+			//System.out.println(dummy_k);
 			int second_grater_size = second_grater.size();
 			int second_less_size = second_less.size();
-			int m = (int) (second_grater_size < Math.ceil(dummy_k / 2) ? second_grater_size : Math.ceil(dummy_k / 2));
+			int m = (second_grater_size < Math.ceil(dummy_k / 2) ? second_grater_size : (int)Math.ceil(dummy_k / 2));
 			for (int i = 1; i <= m; i++) {
+				//System.out.println("here now");
 				Vector<Location> candidate = new Vector<Location>();
 				candidate.add(this.second.location_dummy_set.get(this.second.index_location_real));
 				Set<Integer> second_grater_rand = utils.GetRand(i, second_grater_size);
 				Iterator<Integer> iter1 = second_grater_rand.iterator();
+				int iter1temp, iter2temp;
 				while(iter1.hasNext()) {
-					candidate.add(second_grater.get((int) iter1.next()));
+					iter1temp = iter1.next();
+					candidate.add(second_grater.get(iter1temp));
 				}
+				//System.out.println("at this point");
 				//for (set<Integer>::iterator iter = second_grater_rand.begin(); iter != second_grater_rand.end(); iter++) {
 					//candidate.push_back(second_grater[*iter]);
 				//}
+				//System.out.println(dummy_k - i + " " + second_less_size);
 				Set<Integer> second_less_rand = utils.GetRand(dummy_k - i, second_less_size);
+				//System.out.println("at least now");
 				Iterator<Integer> iter2 = second_less_rand.iterator();
-				while(iter1.hasNext()) {
-					candidate.add(second_less.get((int) iter2.next()));
+				
+				while(iter2.hasNext()) {
+					//System.out.println("help");
+					iter2temp = iter2.next();
+					candidate.add(second_less.get(iter2temp));
 				}
+				//System.out.println("at here");
 				//for (set<int>::iterator iter = second_less_rand.begin(); iter != second_less_rand.end(); iter++) {
 					//candidate.push_back(second_less[*iter]);
 				//}
@@ -234,10 +270,14 @@ public class Location_dummy_sets {
 				for(i = 0; i < k; i++) {
 					first_num.add(0);
 				}
+				System.out.println("right now");
 				//Vector<Integer> first_num = new Vector<Integer>[k];
 				for (i = 0; i < candidate.size(); i++) {
 					for (int j = 0; j < candidate.get(i).edges_id.size(); j++) {
+						System.out.println(first_num.get(candidate.get(i).edges_id.get(j)));
+						first_num.set(candidate.get(i).edges_id.get(j), first_num.get(candidate.get(i).edges_id.get(j))+1);
 						//first_num.get(candidate.get(i).edges_id.get(j))++;
+						System.out.println(first_num.get(candidate.get(i).edges_id.get(j)));
 					}
 				}
 				int first_max = first_num.get(this.first.index_location_real);
@@ -283,12 +323,15 @@ public class Location_dummy_sets {
 		if (!this.DirectionFilter()) {
 			return false;
 		}
+		System.out.println("lalll");
 		if (!this.TimeReasonabilityFilter()) {
 			return false;
 		}
+		System.out.println("gfewe");
 		if (!this.DegreeFilter()) {
 			return false;
 		}
+		System.out.println("hope");
 		return true;
 	}
 }

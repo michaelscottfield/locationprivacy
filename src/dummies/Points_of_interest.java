@@ -20,9 +20,11 @@ public class Points_of_interest {
 			this.poi.add(location);
 			return true;
 		}*/
-		for (Iterator<Location> iter = this.poi.iterator(); iter.hasNext();) {
+		Location loc;
+		for (Iterator<Location> iter = this.poi.iterator(); iter.hasNext() == true;) {
 			//System.out.println(poi.size());
-			if (iter.next().longitude == location.longitude && iter.next().latitude == location.latitude) {
+			loc = iter.next();
+			if (loc.longitude == location.longitude && loc.latitude == location.latitude) {
 				tag = 0;
 				break;
 			}
