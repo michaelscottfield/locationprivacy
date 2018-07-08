@@ -42,7 +42,7 @@ public class Points_of_interest {
 		//ifstream fin;
 		//fin.open("./resources/LosAngeles.CA", ifstream::in);
 		//File file = new File("./resources/LosAngeles.CA");
-		FileInputStream inputStream = new FileInputStream("././resources/LosAngeles.CA");
+		FileInputStream inputStream = new FileInputStream("./resources/LosAngeles.CA");
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 		String str = null;
 		String sArray[];

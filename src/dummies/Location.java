@@ -8,10 +8,10 @@ public class Location {
 	double longitude;
 	double latitude;
 	Vector<Integer> edges_id;
-	public Location(int id, double d, double e) {
+	public Location(int id, double longitude, double latitude) {
 		this.id = id;
-		this.longitude = d;
-		this.latitude = e;
+		this.longitude = longitude;
+		this.latitude = latitude;
 	}
 
 	public Location() {
@@ -19,15 +19,13 @@ public class Location {
 	}
 
 	boolean DeleteEdgeById(int id) {
-		//for (Vector<Integer>::iterator iter = this->edges_id.begin(); iter != this->edges_id.end(); iter++) {
 		for(Iterator<Integer> iter = this.edges_id.iterator(); iter.hasNext();) {
 			if (iter.next() == id) {
 				this.edges_id.remove(id);
 				return true;
 			}
 		}
-		System.out.println("location: delete edge by id failed, there is not exist an edge id is " +id);
-		//cout << "location: delete edge by id failed, there is not exist an edge id is " << id << endl;
+		System.out.println("location: delete edge by id failed, there is not exist an edge id is " + id);
 		return false;
 	}
 }
