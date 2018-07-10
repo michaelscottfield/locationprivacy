@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/locationprivacy.iml" filepath="$PROJECT_DIR$/locationprivacy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mixzonelocprivacy.iml" filepath="$PROJECT_DIR$/mixzonelocprivacy.iml" />
     </modules>
   </component>
 </project>
