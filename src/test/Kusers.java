@@ -100,7 +100,7 @@ public class Kusers {
         }
 
         for (i = 0; i < k; i++) {
-            userserver.send(kservers.get(i).id, lbsid, dummies.location_dummy_set.get(i).longitude, dummies.location_dummy_set.get(i).latitude);
+            //userserver.send(kservers.get(i).id, lbsid, dummies.location_dummy_set.get(i).longitude, dummies.location_dummy_set.get(i).latitude);
             i++;
         }
     }

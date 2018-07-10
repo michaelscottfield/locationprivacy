@@ -1,5 +1,8 @@
 package test;
 
+import dummygenerator.Location;
+import dummygenerator.LocationDummySet;
+import dummygenerator.LocationDummySets;
 import utils.Variable;
 
 import java.io.BufferedReader;
@@ -8,13 +11,16 @@ import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Vector;
 
 public class Server{
     public int id;
     private int port;
     public double longitude;
     public double latitude;
-
+    LocationDummySets locationdummysets = new LocationDummySets();
     public Server(int id, int port, double longitude, double latitude) {
         this.id = id;
         this.port = port;
@@ -23,8 +29,37 @@ public class Server{
         new ServerSocketThread();
     }
 
-    public void send(int receiver_id, int destination_id, double lon, double lat){
+    /*public void send(int receiver_id, int destination_id, double lon, double lat){
         new SocketThread(receiver_id, destination_id, lon, lat);
+    }*/
+    public void send(int userid, Set<Integer> allids, Set<Integer> allusedids, int k, int lbsid, Vector<Double> reallon, Vector<Double> reallat){
+        Kusers kusers = new Kusers();
+        Set<Integer> locids = new HashSet<>();
+        Set<Integer> kuserids;
+        allusedids.add(lbsid);
+        allusedids.add(userid);
+        Location realloc = new Location(kusers.getlocid(reallon.get(0), reallat.get(0), locids),reallon.get(0), reallat.get(0));
+        LocationDummySet firstdummies = locationdummysets.GetDummySet(realloc, k + 1);
+        Location secondrealloc = new Location(kusers.getlocid(reallon.get(1), reallat.get(1), locids),reallon.get(1), reallat.get(1));
+        Set<Integer> secondkuserids;
+        secondkuserids = kusers.getkuserids(allusedids, k, allids);
+        LocationDummySet seconddummies = locationdummysets.GetDummySet(secondrealloc, k + 1);
+        int i = 0;
+        longitude = secondrealloc.longitude;
+        latitude = secondrealloc.latitude;
+        long startTime=System.currentTimeMillis();
+        for(int id:secondkuserids){
+            Thread tempthread = new Thread(new SocketThread(id, lbsid, seconddummies.location_dummy_set.get(i).longitude, seconddummies.location_dummy_set.get(i).latitude));
+            i ++;
+            tempthread.start();
+            try{
+                tempthread.join();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        long endTime=System.currentTimeMillis(); //获取结束时间
+        System.out.println("k="+k +"时，运行时间为:"+(endTime-startTime)+"ms");
     }
 
     public String send_information(int sender_id, int received_id, int destination_id, double longitude, double latitude){
@@ -72,7 +107,7 @@ public class Server{
             this.destination_id = destination_id;
             this.lon = lon;
             this.lat = lat;
-            new Thread(this).start();
+            //new Thread(this).start();
         }
         public void run() {
             try {
