@@ -19,7 +19,7 @@ public class LocationDummySets {
             return locationDummySet;
         } else {
             LocationDummySet locationDummySet = this.CreateLocationDummySet(location, k);
-            this.locationDummySets.add(locationDummySet);
+            //this.locationDummySets.add(locationDummySet);
             return locationDummySet;
         }
     }

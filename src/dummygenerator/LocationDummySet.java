@@ -8,7 +8,7 @@ public class LocationDummySet {
     double time;
     int id_location_real;
     int index_location_real;
-    Vector<Location> location_dummy_set = new Vector<Location>();
+    public Vector<Location> location_dummy_set = new Vector<Location>();
 
     public LocationDummySet(int num_dummy, double time, Location location_real, int k, double s) {
         this.num_dummy = num_dummy;

@@ -10,10 +10,10 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 
 public class Server{
-    private int id;
+    public int id;
     private int port;
-    private double longitude;
-    private double latitude;
+    public double longitude;
+    public double latitude;
 
     public Server(int id, int port, double longitude, double latitude) {
         this.id = id;
