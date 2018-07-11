@@ -38,6 +38,9 @@ public class Server{
         Set<Integer> kuserids;
         allusedids.add(lbsid);
         allusedids.add(userid);
+
+        this.locationdummysets.locationDummySets.clear();
+
         Location realloc = new Location(kusers.getlocid(reallon.get(0), reallat.get(0), locids),reallon.get(0), reallat.get(0));
         LocationDummySet firstdummies = locationdummysets.GetDummySet(realloc, k + 1);
         Location secondrealloc = new Location(kusers.getlocid(reallon.get(1), reallat.get(1), locids),reallon.get(1), reallat.get(1));
@@ -86,7 +89,7 @@ public class Server{
             try {
                 while(true){
                     Socket client = this.serverSocket.accept();
-                    System.out.println("linked");
+                    // System.out.println("linked");
                     new ServerThread(client);
                 }
             } catch (Exception e) {
@@ -123,7 +126,7 @@ public class Server{
                 try{
                     //从服务器端接收数据有个时间限制（系统自设，也可以自己设置），超过了这个时间，便会抛出该异常
                     String echo = buf.readLine();
-                    System.out.println(String.valueOf(id) + ": " + echo);
+                    // System.out.println(String.valueOf(id) + ": " + echo);
                 }catch(SocketTimeoutException e){
                     e.printStackTrace();
                 }
@@ -164,12 +167,12 @@ public class Server{
                         int destination_id = Integer.parseInt(data_list[2]);
                         double lon = Double.valueOf(data_list[3]);
                         double lat = Double.valueOf(data_list[4]);
-                        System.out.println(String.valueOf(id) + ": get message " + String.valueOf(lon) + ", " +
-                                String.valueOf(lat) + " from " + String.valueOf(sender_id));
+//                        System.out.println(String.valueOf(id) + ": get message " + String.valueOf(lon) + ", " +
+//                                String.valueOf(lat) + " from " + String.valueOf(sender_id));
                         // 用户发来的请求
                         if(id == destination_id){
                             //服务商提供服务
-                            System.out.println(String.valueOf(port) + "： provider received, this is the service");
+                            // System.out.println(String.valueOf(port) + "： provider received, this is the service");
                             out.println("provider received, this is the service");
                         } else {
                             Socket socket_middle = new Socket("0.0.0.0", destination_id);
@@ -184,7 +187,7 @@ public class Server{
                             try{
                                 //从服务器端接收数据有个时间限制（系统自设，也可以自己设置），超过了这个时间，便会抛出该异常
                                 String echo = buf_middle.readLine();
-                                System.out.println(String.valueOf(port) + ": " + echo);
+                                // System.out.println(String.valueOf(port) + ": " + echo);
                                 out.println(echo);
                             }catch(SocketTimeoutException e){
                                 System.out.println("Time out, No response");

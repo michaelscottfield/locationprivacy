@@ -23,8 +23,8 @@ public class test {
 //        client.send(20004, 20003, 115, 35);
 //        client.send(20005, 20003, 116, 35);
         Kusers kusers = new Kusers();
-        int mink = 9;
-        int maxk = 40;
+        int mink = 6;
+        int maxk = 20;
         int userid = 20001;
         double delta = 0.00300;
         int lbsid = 20004;

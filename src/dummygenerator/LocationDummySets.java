@@ -9,35 +9,47 @@ import utils.Variable;
 import javax.swing.*;
 
 public class LocationDummySets {
-    Vector<LocationDummySet> locationDummySets = new Vector<LocationDummySet>();
+    public Vector<LocationDummySet> locationDummySets = new Vector<LocationDummySet>();
     Util util = new Util();
 
     public LocationDummySet GetDummySet(Location location, int k) {
         if(this.locationDummySets.isEmpty()) {
-            LocationDummySet locationDummySet = new LocationDummySet(k, 0.0, location, k, 900);
+            double s = Math.pow((int) Math.ceil(Math.sqrt(k)) - 1, 2) * 100;
+            LocationDummySet locationDummySet = new LocationDummySet(k, 0.0, location, k, s);
             this.locationDummySets.add(locationDummySet);
             return locationDummySet;
         } else {
-            LocationDummySet locationDummySet = this.CreateLocationDummySet(location, k);
-            //this.locationDummySets.add(locationDummySet);
-            return locationDummySet;
+            int num_inital = Variable.NUM_DUMMY_INITIAL;
+            int num_try = 10;
+            while(num_try > 0) {
+                if(this.CreateLocationDummySet(location, k, num_inital)){
+                    return this.locationDummySets.lastElement();
+                }
+                this.locationDummySets.remove(this.locationDummySets.size() - 1);
+                num_inital += 1000;
+                num_try--;
+            }
+            return null;
         }
     }
 
-    private LocationDummySet CreateLocationDummySet(Location location, int k) {
+    private boolean CreateLocationDummySet(Location location, int k, int num_inital) {
         LocationDummySet previousDummySet = this.locationDummySets.lastElement();
+        for(Location location_previou: this.locationDummySets.lastElement().location_dummy_set) {
+            location_previou.edges_id.clear();
+        }
         Location previousRealLocation = previousDummySet.location_dummy_set.get(previousDummySet.index_location_real);
         double dst = util.GetDistance(location.longitude, location.latitude, previousRealLocation.longitude,
                 previousRealLocation.latitude);
+        double s = 100000;
         LocationDummySet currentDummySet = new LocationDummySet(k, dst / Variable.SPEED, location,
-                Variable.NUM_DUMMY_INITIAL, 193600);
+                num_inital, s);
         this.locationDummySets.add(currentDummySet);
 
         if(!DummyFilter()) {
-            System.out.println("LocationDummySets: DummyFilter failed");
-            return null;
+            return false;
         }
-        return this.locationDummySets.lastElement();
+        return true;
     }
 
     private boolean DummyFilter() {
